@@ -6,6 +6,10 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
+// score variables
+let scorePlayer = 0;
+let scoreCom = 0;
+
 // diffrent text winning loosing, draw, rematch, foul
 const welcomeMessage1 = "🎮 Welcome to Rock, Paper, Scissors CLI Game!";
 const welcomeMessage2 =
@@ -17,15 +21,12 @@ const thanksMessage = "\nThanks for playing!";
 const winMessage = "Congrats! You win!";
 const loseMessage = "Sorry, you lost!";
 const drawMessage = "Its a draw!";
+const scoreMessage = ["The actual score is Player:", " - ", ":Computer"]; //"The actual score is Player:" + scorePlayer + " - " + scoreCom + ":Computer"
 const rematchMessage = "You want a rematch?";
 const foulMessage = "You enter a wrong word! Its a foul";
 
 // list
-const choices = ["r", "p", "s"] //["rock", "paper", "scissors"];
-
-// score variables
-let scorePlayer = 0;
-let scoreCom = 0;
+const choices = ["r", "p", "s"]; //["rock", "paper", "scissors"];
 
 //functions---------------------------------------------------
 
@@ -35,16 +36,60 @@ function getComChoice() {
     return choices[randIndex];
 }
 // function to calculate winner
-function calcWinner(human, computer) {
-    if (human === computer) {return "draw"}
+function calcWinner(player, computer) {
+    if (player === computer) {
+        return "draw";
+    }
 
-    if ((human == "r" && computer == "s") ||
-    (human == "p" && computer == "r") ||
-    (human == "s" && computer == "p")) {return 'human'}
-    else {return "computer"}
+    if (
+        (player == "r" && computer == "s") ||
+        (player == "p" && computer == "r") ||
+        (player == "s" && computer == "p")
+    ) {
+        scorePlayer++;
+        return "player";
+    } else {
+        scoreCom++;
+        return "computer";
+    }
+}
+// function highScore
+function highScore() {
+    if (scoreCom == scorePlayer) {
+        return "draw";
+    }
+    if (scoreCom > scorePlayer) {
+        return "computer";
+    } else {
+        return "player";
+    }
 }
 // function to present score
-function presentScore() {}
+function presentScore(winner, finished = false) {
+    if (winner == "draw") {
+        console.log(drawMessage);
+    }
+    if (winner == "human") {
+        console.log(winMessage);
+    }
+    if (winner == "computer") {
+        console.log(loseMessage);
+    }
+    console.log(
+        "The actual score is Player:" +
+            scorePlayer +
+            " - " +
+            scoreCom +
+            ":Computer"
+    );
+
+    if (finished) {
+        rl.close();
+        return;
+    } else {
+        return startGame();
+    }
+}
 // Game function
 function startGame() {
     rl.question(gameMessage, (input) => {
@@ -52,9 +97,7 @@ function startGame() {
 
         if (playerChoice == "e") {
             console.log(thanksMessage);
-            presentScore();
-            rl.close();
-            return;
+            return presentScore(highScore(), true);
         }
 
         if (!choices.includes(playerChoice)) {
@@ -62,7 +105,7 @@ function startGame() {
             return startGame();
         }
 
-        console.log(calcWinner(playerChoice, getComChoice()));
+        presentScore(calcWinner(playerChoice, getComChoice()));
     });
 }
 
