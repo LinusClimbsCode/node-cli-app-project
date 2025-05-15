@@ -31,11 +31,25 @@ const choices = ["r", "p", "s"]; //["rock", "paper", "scissors"];
 //functions---------------------------------------------------
 
 // function to get computer choice
+/**
+ * calculates a random choice (rock, paper, scissor) for the computer.
+ * 
+ * @returns {string} random choice from computer
+ */
 function getComChoice() {
     const randIndex = Math.floor(Math.random() * choices.length);
     return choices[randIndex];
 }
+
 // function to calculate winner
+/**
+ * calculates the rock, paper, scissors winner between player and computer. 
+ * And add 1 score point to score variable from player or computer.
+ * 
+ * @param {string} player - choice from player.
+ * @param {string} computer - choice from computer.
+ * @returns {string} the winner.
+ */
 function calcWinner(player, computer) {
     if (player === computer) {
         return "draw";
@@ -53,8 +67,14 @@ function calcWinner(player, computer) {
         return "computer";
     }
 }
-// function highScore
-function highScore() {
+
+// function calcFinalWinner
+/**
+ * calculates the final winner of the game.
+ * 
+ * @returns {string} returns the final winner.
+ */
+function calcFinalWinner() {
     if (scoreCom == scorePlayer) {
         return "draw";
     }
@@ -64,23 +84,31 @@ function highScore() {
         return "player";
     }
 }
+
 // function to present score
+/**
+ * 
+ * @param {string} winner - select different message, depends who wins
+ * @param {boolean} finished - if finished is true, ends game and close readline
+ * @returns game function if finished is false
+ */
 function presentScore(winner, finished = false) {
     if (winner == "draw") {
         console.log(drawMessage);
     }
-    if (winner == "human") {
+    if (winner == "player") {
         console.log(winMessage);
     }
     if (winner == "computer") {
         console.log(loseMessage);
     }
+
     console.log(
-        "The actual score is Player:" +
+        scoreMessage[0] +
             scorePlayer +
-            " - " +
+            scoreMessage[1] +
             scoreCom +
-            ":Computer"
+            scoreMessage[2]
     );
 
     if (finished) {
@@ -90,6 +118,9 @@ function presentScore(winner, finished = false) {
         return startGame();
     }
 }
+/**
+ * game function for a rock, paper, scissors game
+ */
 // Game function
 function startGame() {
     rl.question(gameMessage, (input) => {
@@ -97,7 +128,7 @@ function startGame() {
 
         if (playerChoice == "e") {
             console.log(thanksMessage);
-            return presentScore(highScore(), true);
+            return presentScore(calcFinalWinner(), true);
         }
 
         if (!choices.includes(playerChoice)) {
