@@ -46,7 +46,7 @@ function getComChoice() {
  * Determines the winner of a round and updates the scores.
  * @param {string} player - The player's choice ("rock", "paper", or "scissors").
  * @param {string} computer - The computer's choice.
- * @returns {string} "player", "computer", or "draw" based on the result.
+ * @returns {string} "win", "lose", or "draw" based on the result in the perspective of the player.
  */
 function calcWinner(player, computer) {
     if (player === computer) {
@@ -57,17 +57,17 @@ function calcWinner(player, computer) {
         (player === "scissors" && computer === "paper")
     ) {
         scorePlayer++;
-        return "player";
+        return "win";
     } else {
         scoreCom++;
-        return "computer";
+        return "lose";
     }
 }
 
 // function calcFinalWinner
 /**
  * Determines the final winner based on the current scores.
- * @returns {string} "player", "computer", or "draw".
+ * @returns {string} "win", "lose", or "draw". In perspective of the player.
  */
 function calcFinalWinner() {
     if (scoreCom == scorePlayer) {
