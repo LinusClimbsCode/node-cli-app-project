@@ -51,12 +51,10 @@ function getComChoice() {
 function calcWinner(player, computer) {
     if (player === computer) {
         return "draw";
-    }
-
-    if (
-        (player == "r" && computer == "s") ||
-        (player == "p" && computer == "r") ||
-        (player == "s" && computer == "p")
+    } else if (
+        (player === "rock" && computer === "scissors") ||
+        (player === "paper" && computer === "rock") ||
+        (player === "scissors" && computer === "paper")
     ) {
         scorePlayer++;
         return "player";
@@ -76,9 +74,9 @@ function calcFinalWinner() {
         return "draw";
     }
     if (scoreCom > scorePlayer) {
-        return "computer";
+        return "lose";
     } else {
-        return "player";
+        return "win";
     }
 }
 
@@ -108,18 +106,24 @@ function presentScore(gameEnd = false) {
  * Displays the result message based on the round outcome.
  * @param {string} result - "player", "computer", "draw", or "foul".
  */
-function presentResult (result) {
+function presentResult(result) {
     switch (result) {
         case "win":
-        console.log(winMessage);
+            console.log(winMessage);
+            break;
         case "lose":
-        console.log(loseMessage);
+            console.log(loseMessage);
+            break;
         case "draw":
-        console.log(drawMessage);
+            console.log(drawMessage);
+            break;
         case "foul":
-        console.log(foulMessage);
-        return startGame;
-}}
+            console.log(foulMessage);
+            return startGame();
+        default:
+            break;
+    }
+}
 
 /**
  * Prompts the player for their choice and calls the callback with the choice.
@@ -130,7 +134,7 @@ function getPlayerChoice(callback) {
     rl.question(gameMessage, (input) => {
         input = input.trim();
         if (input.length <= 0) {
-            console.log(foulMessage);
+            presentResult("foul");
             return startGame();
         }
 
@@ -143,7 +147,8 @@ function getPlayerChoice(callback) {
                 return callback("scissors");
             case "e":
                 console.log(thanksMessage);
-                return presentScore(calcFinalWinner(), true);
+                presentResult(calcFinalWinner());
+                return presentScore(true);
             default:
                 console.log(foulMessage);
                 return startGame();
@@ -164,10 +169,11 @@ function startGame() {
         console.log("Computer chose:", comChoice);
 
         // calculate winner and presenting it
-        presentResult(calcWinner())
+        const result = calcWinner(playerChoice, comChoice)
+        presentResult(result)
 
         // presenting score
-        presentScore()
+        return presentScore()
 
     });
 }
