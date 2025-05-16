@@ -1,5 +1,6 @@
 // imports
 const readline = require("readline");
+const { start } = require("repl");
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -26,15 +27,14 @@ const rematchMessage = "You want a rematch?";
 const foulMessage = "You enter a wrong word! Its a foul";
 
 // list
-const choices = ["r", "p", "s"]; //["rock", "paper", "scissors"];
+const choices = ["rock", "paper", "scissors"];
 
 //functions---------------------------------------------------
 
 // function to get computer choice
 /**
- * calculates a random choice (rock, paper, scissor) for the computer.
- * 
- * @returns {string} random choice from computer
+ * Returns a random choice for the computer: "rock", "paper", or "scissors".
+ * @returns {string} The computer's choice.
  */
 function getComChoice() {
     const randIndex = Math.floor(Math.random() * choices.length);
@@ -43,12 +43,10 @@ function getComChoice() {
 
 // function to calculate winner
 /**
- * calculates the rock, paper, scissors winner between player and computer. 
- * And add 1 score point to score variable from player or computer.
- * 
- * @param {string} player - choice from player.
- * @param {string} computer - choice from computer.
- * @returns {string} the winner.
+ * Determines the winner of a round and updates the scores.
+ * @param {string} player - The player's choice ("rock", "paper", or "scissors").
+ * @param {string} computer - The computer's choice.
+ * @returns {string} "player", "computer", or "draw" based on the result.
  */
 function calcWinner(player, computer) {
     if (player === computer) {
@@ -70,9 +68,8 @@ function calcWinner(player, computer) {
 
 // function calcFinalWinner
 /**
- * calculates the final winner of the game.
- * 
- * @returns {string} returns the final winner.
+ * Determines the final winner based on the current scores.
+ * @returns {string} "player", "computer", or "draw".
  */
 function calcFinalWinner() {
     if (scoreCom == scorePlayer) {
@@ -87,22 +84,10 @@ function calcFinalWinner() {
 
 // function to present score
 /**
- * 
- * @param {string} winner - select different message, depends who wins
- * @param {boolean} finished - if finished is true, ends game and close readline
- * @returns game function if finished is false
+ * Displays the current score. Ends the game if gameEnd is true.
+ * @param {boolean} [gameEnd=false] - Whether to end the game and close readline.
  */
-function presentScore(winner, finished = false) {
-    if (winner == "draw") {
-        console.log(drawMessage);
-    }
-    if (winner == "player") {
-        console.log(winMessage);
-    }
-    if (winner == "computer") {
-        console.log(loseMessage);
-    }
-
+function presentScore(gameEnd = false) {
     console.log(
         scoreMessage[0] +
             scorePlayer +
@@ -111,41 +96,89 @@ function presentScore(winner, finished = false) {
             scoreMessage[2]
     );
 
-    if (finished) {
+    if (gameEnd) {
         rl.close();
         return;
     } else {
         return startGame();
     }
 }
+
 /**
- * game function for a rock, paper, scissors game
+ * Displays the result message based on the round outcome.
+ * @param {string} result - "player", "computer", "draw", or "foul".
  */
-// Game function
-function startGame() {
+function presentResult (result) {
+    switch (result) {
+        case "win":
+        console.log(winMessage);
+        case "lose":
+        console.log(loseMessage);
+        case "draw":
+        console.log(drawMessage);
+        case "foul":
+        console.log(foulMessage);
+        return startGame;
+}}
+
+/**
+ * Prompts the player for their choice and calls the callback with the choice.
+ * @param {function} callback - Function to call with the player's choice.
+ */
+function getPlayerChoice(callback) {
+    // asking to make a move
     rl.question(gameMessage, (input) => {
-        const playerChoice = input[0].toLowerCase();
-
-        if (playerChoice == "e") {
-            console.log(thanksMessage);
-            return presentScore(calcFinalWinner(), true);
-        }
-
-        if (!choices.includes(playerChoice)) {
+        input = input.trim();
+        if (input.length <= 0) {
             console.log(foulMessage);
             return startGame();
         }
 
-        presentScore(calcWinner(playerChoice, getComChoice()));
+        switch (input[0].toLowerCase()) {
+            case "r":
+                return callback("rock");
+            case "p":
+                return callback("paper");
+            case "s":
+                return callback("scissors");
+            case "e":
+                console.log(thanksMessage);
+                return presentScore(calcFinalWinner(), true);
+            default:
+                console.log(foulMessage);
+                return startGame();
+        }
     });
 }
+
+/**
+ * game function for a rock, paper, scissors game
+ */
+function startGame() {
+    getPlayerChoice((playerChoice) => {
+        // get computers choice
+        const comChoice = getComChoice();
+
+        // print both choices to the console
+        console.log("Player chose:", playerChoice);
+        console.log("Computer chose:", comChoice);
+
+        // calculate winner and presenting it
+        presentResult(calcWinner())
+
+        // presenting score
+        presentScore()
+
+    });
+}
+
 
 // app start ------------------------------------------------
 // Welcome message
 console.log(welcomeMessage1);
 console.log(welcomeMessage2);
-//Welcome message
-rl.question(enterMessage, () => {
+// asking for enter message to continue
+rl.question(enterMessage, (input) => {
     scoreCom = 0;
     scorePlayer = 0;
     startGame();
