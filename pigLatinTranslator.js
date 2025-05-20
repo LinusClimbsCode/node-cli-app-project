@@ -7,6 +7,7 @@ console.log(inputArray)
 // checks input lenght if any input is given
 if (inputArray.length == 0) {
     console.log("You didn't enter a phrase, please restart and try again"); // error message 
+    process.exit(1); // exit script 
 }
 
 // list of vowel and consonant
@@ -71,3 +72,4 @@ inputArray.forEach((input) => {
 const outputString = outputArray.toString().replace(/,/g, " ")
 
 console.log(outputString)
+process.exit(1); // exit script
