@@ -51,3 +51,4 @@ function caesarCipher(text, shift) {
 //start function
 const encrypted = caesarCipher(inputString, shift);
 console.log(encrypted);
+process.exit(1); // exit script
