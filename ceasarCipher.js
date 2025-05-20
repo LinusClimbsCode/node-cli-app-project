@@ -49,5 +49,6 @@ function caesarCipher(text, shift) {
 }
 
 //start function
-const encrypted = caesarCipher(inputString, shift);
-console.log(encrypted);
+const encrypted = caesarCipher(inputString, shift); // start function and safed in variable
+console.log(encrypted); // print result
+  process.exit(1); // exit script
