@@ -10,7 +10,7 @@ const inputString = arguments.join(" ");
 // checks if there is an input and if the shift is a number
 if (!inputString || isNaN(shift)) {
   console.log("Wrong input,\nYou need a message to encrypt.\nAnd shift has to be a number.\nHow to: node caesarCipher.js \"your message\" shift"); // error message for console
-  process.exit(1); // exit script
+  process.exit(1); // exit script with error
 }
 
 
@@ -51,4 +51,4 @@ function caesarCipher(text, shift) {
 //start function
 const encrypted = caesarCipher(inputString, shift); // start function and safed in variable
 console.log(encrypted); // print result
-  process.exit(1); // exit script
+  process.exit(0); // exit script with no error
